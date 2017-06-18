@@ -1,33 +1,30 @@
 defmodule DoomTrain.Station.Bx do
-  use Tesla
+  use GenServer
 
-  plug Tesla.Middleware.BaseUrl, "https://bx.in.th/api"
-  plug Tesla.Middleware.JSON
+  alias DoomTrain.Bx
 
-  adapter Tesla.Adapter.Hackney
+  # Client API
 
-  @spec market_data :: Tesla.Env.t
-  def market_data do
-    get("")
+  def start_link(name) do
+    GenServer.start_link(__MODULE__, :ok, name: name)
   end
 
-  @spec currency_pairings :: Tesla.Env.t
-  def currency_pairings do
-    get("/pairing")
+  # Server Callbacks
+
+  def init(:ok) do
+    schedule_currency_pairing()
+    {:ok, %{}}
   end
 
-  @spec order_book(integer()) :: Tesla.Env.t
-  def order_book(pairing_id) do
-    get("/orderbook/?pairing=" <> to_string(pairing_id))
+  def handle_info(:currency_pairing, state) do
+    Bx.currency_pairings() |> IO.inspect
+
+    schedule_currency_pairing()
+
+    {:noreply, state}
   end
 
-  @spec recent_trades(integer()) :: Tesla.Env.t
-  def recent_trades(pairing_id) do
-    get("/trade/?pairing=" <> to_string(pairing_id))
-  end
-
-  @spec historical_trade_data(integer(), Date.t) :: Tesla.Env.t
-  def historical_trade_data(pairing_id, date) do
-    get("/tradehistory/?pairing=" <> to_string(pairing_id) <> "&date=" <> Date.to_string(date))
+  defp schedule_currency_pairing do
+    Process.send_after(self(), :currency_pairing, 60 * 1000)
   end
 end
