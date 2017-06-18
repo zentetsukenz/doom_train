@@ -38,7 +38,9 @@ defmodule DoomTrain.Mixfile do
      {:cowboy, "~> 1.0"},
      {:tesla, "~> 0.7.1"},
      {:poison, ">= 1.0.0"},
-     {:hackney, ">= 1.8.0"}]
+     {:hackney, ">= 1.8.0"},
+     {:timex, "~> 3.0"},
+     {:timex_ecto, "~> 3.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
