@@ -6,6 +6,8 @@ defmodule DoomTrain.Bx do
 
   adapter Tesla.Adapter.Hackney
 
+  # Public BX APIs
+
   @spec market_data :: Tesla.Env.t
   def market_data do
     get("")
@@ -18,16 +20,19 @@ defmodule DoomTrain.Bx do
 
   @spec order_book(integer()) :: Tesla.Env.t
   def order_book(pairing_id) do
-    get("/orderbook/?pairing=" <> to_string(pairing_id))
+    get("/orderbook/", query: %{pairing: pairing_id})
   end
 
   @spec recent_trades(integer()) :: Tesla.Env.t
   def recent_trades(pairing_id) do
-    get("/trade/?pairing=" <> to_string(pairing_id))
+    get("/trade/", query: %{pairing: pairing_id})
   end
 
   @spec historical_trade_data(integer(), Date.t) :: Tesla.Env.t
   def historical_trade_data(pairing_id, date) do
-    get("/tradehistory/?pairing=" <> to_string(pairing_id) <> "&date=" <> Date.to_string(date))
+    get("/tradehistory/", query: %{
+      pairing: pairing_id,
+      date: Date.to_string(date)
+    })
   end
 end
