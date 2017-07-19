@@ -7,7 +7,7 @@ defmodule DoomTrain.Bx.DataCollector do
     do_run(pairing_id, from, to)
   end
 
-  def do_run(pairing_id, from, to) do
+  defp do_run(pairing_id, from, to) do
     if Timex.compare(from, to) == -1 do
       %{"data" => data} = Bx.historical_trade_data(pairing_id, from).body
 
